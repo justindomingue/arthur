@@ -10,7 +10,7 @@ end
 task :default => :spec
 
 task :console do
-  exec "irb -r arthur -I ./lib"
+  exec "pry -r arthur -I ./lib"
 end
 
 task :c => :console
