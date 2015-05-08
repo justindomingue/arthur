@@ -2,8 +2,6 @@
 
 Conversational Dialog Engine that learns by talking to humans.
 
-TODO: Delete this and the text above, and describe your gem
-
 ## Installation
 
 Add this line to your application's Gemfile:
