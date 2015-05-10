@@ -4,7 +4,12 @@ require "arthur/string"
 require "arthur/adapters/redis_adapter"
 
 module Arthur
+
+  REPLY_COUNT_TRESHOLD = 3
+
   class PrinceOfWales
+
+    attr_accessor :db
 
     def initialize
       @db = Arthur::RedisAdapter.new
@@ -55,6 +60,7 @@ module Arthur
           @prev_reply = nil
         end
       else
+        # TODO - Create record with no replies so arthur can ask other people
         reply = "I don't know... but I'll be sure to ask around!"
         @prev_reply = nil
       end
@@ -62,27 +68,8 @@ module Arthur
       reply
     end
 
-    # Trains the bot with data in file at `filename`
-    def train_from_file(filename='data/training_set.json')
-      file = File.read(filename)
-      data = JSON.parse(file)
-      self.train(data)
-    end
-
-    # Trains the bot with the ruby object in `data`
-    # Expected format:
-    #   { 'input1': ['reply1', 'reply2', ...],
-    #     ...
-    #     'inputK': "input1"     <== reference
-    #   }
-    def train(data)
-      data.each_pair do |k,v|
-        if v.is_a? String
-          # TODO alias
-        else
-          v.each { |reply| @db.add_reply(k, reply, Arthur::REPLY_COUNT_TRESHOLD) }
-        end
-      end
+    def go_train()
+      @db.train_from_file
     end
   end
 end

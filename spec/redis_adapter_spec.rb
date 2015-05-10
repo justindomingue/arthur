@@ -38,9 +38,9 @@ describe Arthur::RedisAdapter do
     end
 
     it '.creates a new reply with specific count' do
-      @redis_adapter.add_reply('input2', 'reply', 10)
+      @redis_adapter.add_reply('input2', 'reply', Arthur::REPLY_COUNT_TRESHOLD)
       db_value = @redis_adapter.get('input2')
-      expect(db_value['reply']).to eq 10
+      expect(db_value['reply']).to eq Arthur::REPLY_COUNT_TRESHOLD+1
     end
   end
 
@@ -70,6 +70,23 @@ describe Arthur::RedisAdapter do
       @redis_adapter.add_reply('input', 'reply3')
 
       expect(@redis_adapter.get_valid_answers_for('input')).to eq ['reply1', 'reply2']
+    end
+  end
+
+  context '.train' do
+    it do
+      data = {
+        "a"=>["a1", "a2", "a3"],
+        "b"=>["b1"]
+      }
+
+      @redis_adapter.train(data)
+
+      expect(@redis_adapter.get('a').keys).to eq ['a1', 'a2', 'a3']
+      expect(@redis_adapter.get('a').values).to eq Array.new(3) {Arthur::REPLY_COUNT_TRESHOLD+1}
+
+      expect(@redis_adapter.get('b').keys).to eq ['b1']
+      expect(@redis_adapter.get('b').values).to eq Array.new(1) {Arthur::REPLY_COUNT_TRESHOLD+1}
     end
   end
 end
