@@ -4,7 +4,7 @@ require "arthur/string"
 require "arthur/adapters/redis_adapter"
 
 module Arthur
-  class PrinceOfWales
+  class Bot
 
     def initialize
       @db = Arthur::RedisAdapter.new
@@ -40,7 +40,7 @@ module Arthur
 
       @prev_input = input
 
-      # Arthur said `@prev_reply` and user replied with `input`
+      # Bot said `@prev_reply` and user replied with `input`
       @db.add_reply(@prev_reply, input) if @prev_reply
 
       # Get the input from the database

@@ -1,0 +1,22 @@
+{
+  "hello":[
+    "hello",
+    "how is it going",
+    "how do you do",
+    "beautiful day today, no"
+  ],
+  "hey there":"hello",
+  "how are you":[
+    "i'm good, thanks",
+    "it's all about you here"
+  ],
+  "where are you":[
+    "wherever you are, that's where i am",
+    "here and there..."
+  ],
+  "seriously":[
+    "alright",
+    "ok",
+    "alright, let's get serious"
+  ]
+}

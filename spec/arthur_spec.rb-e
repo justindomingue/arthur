@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe Arthur::PrinceOfWales do
+describe Arthur::Bot do
   context '.train' do
-    let(:bot) { Arthur::PrinceOfWales.new }
+    let(:bot) { Arthur::Bot.new }
 
     it do
       data = {
