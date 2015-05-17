@@ -9,6 +9,11 @@ module Arthur
   #
   class RedisAdapter
 
+    attr_accessor :redis
+
+    NO_VALID_KEY_PREFIX = '_'
+    NO_VALID_VALUE      = {}
+
     def initialize(redis=Redis.new)
       @redis = redis
     end
@@ -26,15 +31,32 @@ module Arthur
     # Sets `key` to value `object`
     # Params:
     #   key: String
-    #   object: Object
+    #   object: Object or nil if input `key` has no replies
     #
     def set(key, object)
+      object = Arthur::RedisAdapter::NO_VALID_VALUE if object.nil?
+
       @redis.set(key, object.to_json)
     end
 
+    # Returns the untrained key for `key`
+    def untrained_key_for(key)
+      NO_VALID_KEY_PREFIX + key
+    end
+
+    def untrained_key_prefix
+      NO_VALID_KEY_PREFIX
+    end
+
     # Adds `reply` to key `input` in the database
+    # Takes care of removing untrained input as well
     def add_reply(input, reply, extra_incr=0)
+
       p "Adding reply '" + reply + "' to input '" + input
+
+      # Remove untrained input record if it exists
+      @redis.del(untrained_key_for(input))
+
       # Get previous record for `input` or create a new one
       db_value = self.get(input) || {reply => 0}
 
@@ -45,7 +67,9 @@ module Arthur
       self.set(input, db_value)
     end
 
-    # Returns
+    # Gets a valid answer for input `input`
+    #
+    # Returns:
     #   An array of valid answers in reply to `input`
     #   nil if `input` has no record in the database
     #   []  if `input` has no replies with count higher than REPLY_COUNT_TREHSHOLD
@@ -57,6 +81,11 @@ module Arthur
       !db_value ?
         nil :
         db_value.select { |_, v| v >= Arthur::REPLY_COUNT_TRESHOLD }.keys
+    end
+
+    # Returns an array of inputs without valid answers
+    def get_untrained_inputs()
+      @redis.scan_each(match: '_*').to_a
     end
 
     # Trains the bot with data in file at `filename`

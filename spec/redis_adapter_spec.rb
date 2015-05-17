@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'fakeredis/rspec'
 
 describe Arthur::RedisAdapter do
   before(:each) do
@@ -41,6 +40,14 @@ describe Arthur::RedisAdapter do
       @redis_adapter.add_reply('input2', 'reply', Arthur::REPLY_COUNT_TRESHOLD)
       db_value = @redis_adapter.get('input2')
       expect(db_value['reply']).to eq Arthur::REPLY_COUNT_TRESHOLD+1
+    end
+
+    it '.removes untrained input record' do
+      @redis_adapter.set('_untrained', '{}')
+      expect(@redis_adapter.redis.exists('_untrained')).to be true
+
+      @redis_adapter.add_reply('untrained', 'reply')
+      expect(@redis_adapter.redis.exists('_untrained')).to be false
     end
   end
 
