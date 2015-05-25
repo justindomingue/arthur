@@ -33,6 +33,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "guard-rspec"
   spec.add_development_dependency "fakeredis"
 
-  spec.add_production_dependency "json"
-  spec.add_production_dependency "redis"
+  spec.add_runtime_dependency "json"
+  spec.add_runtime_dependency "redis"
 end
