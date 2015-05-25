@@ -1,3 +1,5 @@
+require 'answerific'
+
 module Arthur
   class PrinceOfWales
 
@@ -15,6 +17,8 @@ module Arthur
 
       # Untrained inputs created in the current session
       @session_untrained_inputs= Set.new
+
+      @answerific = Answeriric::Miner.new
     end
 
     # Replies to `input`
@@ -47,20 +51,33 @@ module Arthur
         end
       else
         # At this point, Arthur doesn't know how to reply to `input`
+        # If the input looks like a question, use Answerific to mine the web for an answer
+        # Otherwise, reply with one of the untrained inputs
 
-        # Get untrained inputs so Arthur can learn how to reply to them
-        reply = @db.get_untrained_inputs.sample.to_s.sub(@db.untrained_key_prefix, '')
+        is_question = input.start_with? "wh"
 
-        # Keep track of previous reply: either an untrained input or nothing (only help msg)
-        @prev_reply = reply.empty? ? nil : reply.dup
+        if is_question
+          # Using Answerific, get an answer
+          reply = @answerific.answer input
+          @prev_reply = reply.dup
 
-        # Prepend a help message to the reply
-        reply.prepend "Huh. "
+          # Tell the user that this answer was searched for
+          reply.prepend "Here's what I found for you. "
+        else
+          # Get untrained inputs so Arthur can learn how to reply to them
+          reply = @db.get_untrained_inputs.sample.to_s.sub(@db.untrained_key_prefix, '')
 
-        # Track the untrained input
-        untrained_key = @db.untrained_key_for(input)
-        @db.set(untrained_key, [])
-        @session_untrained_inputs << untrained_key
+          # Keep track of previous reply: either an untrained input or nothing (only help msg)
+          @prev_reply = reply.empty? ? nil : reply.dup
+
+          # Prepend a help message to the reply
+          reply.prepend "Huh. "
+
+          # Track the untrained input
+          untrained_key = @db.untrained_key_for(input)
+          @db.set(untrained_key, [])
+          @session_untrained_inputs << untrained_key
+        end
       end
 
       return reply
