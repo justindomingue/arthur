@@ -22,6 +22,11 @@ Or install it yourself as:
 
 TODO: Write usage instructions here
 
+## Roadmap
+
+* Use answerific to reply to untrained input (questions)
+* Store inputs and replies in a more flexible way
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `bin/console` for an interactive prompt that will allow you to experiment.
