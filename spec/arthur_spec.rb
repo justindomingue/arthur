@@ -11,11 +11,11 @@ describe Arthur::PrinceOfWales do
     # . hey
     # -> I don't know... Where is Pluto?
     # . In the sky!
-    arthur = Arthur::PrinceOfWales.new prev: 'hello', redis: Redis.new
+    arthur = Arthur::PrinceOfWales.new prev: 'hello', redis: Redis.new, dont_know_phrases: ["Huh"]
 
-    expect(arthur.reply('hi')).to eq 'i don\'t know... '
-    expect(arthur.reply('where is pluto')).to eq 'i don\'t know... hi'
-    expect(arthur.reply('hey')).to eq 'i don\'t know... where is pluto'
-    expect(arthur.reply('in the sky')).to eq 'i don\'t know... '
+    expect(arthur.reply('hi')).to eq 'Huh '
+    expect(arthur.reply('where is pluto')).to eq 'Huh hi'
+    expect(arthur.reply('hey')).to eq 'Huh where is pluto'
+    expect(arthur.reply('in the sky')).to eq 'Huh '
   end
 end

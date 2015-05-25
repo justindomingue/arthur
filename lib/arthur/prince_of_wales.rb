@@ -3,7 +3,7 @@ require 'answerific'
 module Arthur
   class PrinceOfWales
 
-    attr_accessor :db
+    attr_reader :db, :dont_know_phrases
 
     # Initialize Arthur, Prince Of Wales
     #
@@ -14,11 +14,12 @@ module Arthur
     def initialize(opts={})
       @db = opts[:db] || Arthur::RedisAdapter.new
       @prev_reply = opts[:prev] || ""
+      @dont_know_phrases = opts[:dont_know_phrases] || ["Huh...", "I don't know..."]
 
       # Untrained inputs created in the current session
       @session_untrained_inputs= Set.new
 
-      @answerific = Answeriric::Miner.new
+      @answerific = Answerific::Miner.new
     end
 
     # Replies to `input`
@@ -59,7 +60,9 @@ module Arthur
         if is_question
           # Using Answerific, get an answer
           reply = @answerific.answer input
-          @prev_reply = reply.dup
+
+          # Don't save the reply
+          @prev_reply = nil
 
           # Tell the user that this answer was searched for
           reply.prepend "Here's what I found for you. "
@@ -71,7 +74,7 @@ module Arthur
           @prev_reply = reply.empty? ? nil : reply.dup
 
           # Prepend a help message to the reply
-          reply.prepend "Huh. "
+          reply.prepend @dont_know_phrases.sample + ' '
 
           # Track the untrained input
           untrained_key = @db.untrained_key_for(input)
