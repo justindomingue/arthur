@@ -57,7 +57,7 @@ module Arthur
 
         is_question = input.start_with? "wh"
 
-        if is_question && !input.include? "you"
+        if is_question && !input.include?("you")
           # Using Answerific, get an answer
           reply = @answerific.answer input
 
