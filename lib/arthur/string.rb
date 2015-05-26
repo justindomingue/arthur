@@ -1,4 +1,4 @@
-require "CGI"
+require 'cgi'
 
 class String
   # Removes non alpha-numeric characters minus the space
