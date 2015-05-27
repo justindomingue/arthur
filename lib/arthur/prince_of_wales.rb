@@ -55,7 +55,7 @@ module Arthur
         # If the input looks like a question, use Answerific to mine the web for an answer
         # Otherwise, reply with one of the untrained inputs
 
-        is_question = input.start_with?("wh") or input.start_with?("how")
+        is_question = input.start_with?("wh") || input.start_with?("how")
 
         if is_question && !input.include?("you")
           # Using Answerific, get an answer
