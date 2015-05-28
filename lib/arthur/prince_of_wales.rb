@@ -29,7 +29,7 @@ module Arthur
     # Return: String
     #
     def reply(input)
-      input = input.remove_new_lines.remove_non_alpha_numeric
+      input = input.downcase.remove_new_lines.remove_non_alpha_numeric
       reply = ""
 
       # Arthur said `@prev_reply` and user replied with `input`
