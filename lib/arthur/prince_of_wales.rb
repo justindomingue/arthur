@@ -32,6 +32,11 @@ module Arthur
       input = input.downcase.remove_new_lines.remove_non_alpha_numeric
       reply = ""
 
+      if input.empty?
+        @prev_reply = nil
+        return "say something"
+      end
+
       # Arthur said `@prev_reply` and user replied with `input`
       p "prev reply is " + @prev_reply.to_s
       @db.add_reply(@prev_reply, input) if @prev_reply
